@@ -7,7 +7,7 @@
 # https://learnxinyminutes.com/docs/yaml/
 
 title: jk31 Blog
-description:
+# description:
 github_username: jk31
 
 # Email and twitter are optional:
@@ -28,7 +28,7 @@ plugins:
   - jekyll-octicons
 
 titles_from_headings:
-  enabled:     true
+  enabled:     false
   strip_title: true
   collections: true
 
