@@ -1,6 +1,6 @@
 # Kernel image processing in NumPy (not finished)
 
-In this post I will explain how I use NumPy to implement the **kernal image processing** that is used in Deep Learning and other image processing areas. After reading you will (hopefully) understand (better) how the convolutional in Neural Netweorks work, how **image bluring** like in Photoshop might work and how to implement that all in NumPy.
+In this post I will explain how I use NumPy to implement the **kernal image processing** that is used in Deep Learning and other image processing areas. After reading you will (hopefully) understand (better) how the convolutional in Neural Networks work, how **image bluring** like in Photoshop might work and how to implement that all in NumPy. To follow the post you need some basic knowledge of Python and NumPy.
 
 ## Intro
 
@@ -52,7 +52,7 @@ $$
 
 If your image is 100 pixel wide, your kernel has a width of 3 and the strides are set to 1, the width of your output will be 98. This number is not a floating number but an integer. This means that you don't need a padding in form of columns. You can do the same for the vertical length. If one of the output dimensions is a floating number you need some padding. Technically you could also cut your image so that it fits, but this sounds like cheating. You may also notice that the output is smaller than the input. This means that we will use some information, right? That's correct but absolutely not a problem for a CNN. Why? That's complicated and not neccesary here.
 
-Ok, let's implement this in python. (btw I use python 3.7)
+Ok, let's implement this in Python. The output of the code cells is written in the comments indicated by `#`.
 The only libraries that you need here are
 
 ```python
@@ -69,12 +69,30 @@ plt.imshow(animal)
 
 <img src="/images/output1.png">
 
-`imread(...)` outputs an NumPy array that contains all pixels of the image. How big is the image?
+`imread(...)` outputs an NumPy array that contains all pixels of the image.   
+How big is this image?
 ```python
 animal.shape
 # (100, 100, 3)
 ```
-`(100, 100, 3)`
+The output tells us that the image is 100 pixel wide, 100 pixel long. The 3 shows us the **3rd** dimension - the color dimension. The image is not a black/white image. Each pixel contains information about the three color channels **red**, **green**, **blue**. For a black/white images the output of the shape would be simply `(100, 100)`.  
+We can also look at each pixel seperately. This is the pixel in the top left corner.
+```python
+animal[0, 0, :3]
+# array([0.5176471, 0.5137255, 0.5372549], dtype=float32)
+```
+The colors in the channel can be expressed either on the scale from 0 to 255, where you can only use integers, or 0 to 1, where you can obviously also use floating numbers.
+
+Our kernels are also NumPy arrays.
+```python
+kernel_blur = np.ones((3,3))*(1/9)
+kernel_blur
+# array([[0.11111111, 0.11111111, 0.11111111],
+#       [0.11111111, 0.11111111, 0.11111111],
+#       [0.11111111, 0.11111111, 0.11111111]])
+```
+This might help you to understand how a kernel can blur a image. Every single pixel in the final output will be a combination of 9 diffent pixel surrounding the
+
 ## Trash
 
 
