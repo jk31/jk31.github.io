@@ -1,4 +1,4 @@
-# Kernel image processing in NumPy
+# Kernel image processing in NumPy (not finished)
 
 In this post I will explain how I use NumPy to implement the **kernal image processing** that is used in Deep Learning and other image processing areas.
 
@@ -47,8 +47,9 @@ If you look at the image and imagine how the kernel is moving over the image you
 Let us assume that we don't know how to implement padding, or we just are lazy and don't want to have it. How can I know that the combination of my kernel and the strides fit to the image, so that we don't need a padding. There is a formula that can help us.
 
 $$
-Output_x = \frac{Input_x + 2\cdotPadding_x - Kernel_x}{strides} + 1
+Output_x = \frac{Input_x + 2\cdot Padding_x - Kernel_x}{strides} + 1
 $$
+
 If your image is 100 pixel wide, your kernel has a width of 3 and the strides are set to 1, the width of your output will be 98. This number is not a floating number but an integer. This means that you don't need a horizontal padding. You can do the same for the vertical length. If one of the output dimensions is a floating number you need some padding. Technically you could also cut your image so that it fits, but this sounds like cheating. You may also notice that the output is smaller than the input. This means that we will use some information, right? That's correct but alsolutely not a problem for a CNN. Why? That's complicated and not neccesary here.
 
 Ok, let's implement this in python. (btw I use python 3.7)
