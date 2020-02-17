@@ -47,10 +47,12 @@ If you look at the image and imagine how the kernel is moving over the image you
 Let us assume that we don't know how to implement padding, or we just are lazy and don't want to have it. How can I know that the combination of my kernel and the strides fit to the image, so that we don't need a padding. There is a formula that can help us.
 
 $$
-Output_x = \frac{Input_x + 2\cdot Padding_x - Kernel_x}{strides} + 1
+Output_x = \frac{Input_x + 2\cdot Padding_x- Kernel_x}{strides} + 1
 $$
 
-If your image is 100 pixel wide, your kernel has a width of 3 and the strides are set to 1, the width of your output will be 98. This number is not a floating number but an integer. This means that you don't need a padding in form of columns. You can do the same for the vertical length. If one of the output dimensions is a floating number you need some padding. Technically you could also cut your image so that it fits, but this sounds like cheating. You may also notice that the output is smaller than the input. This means that we will use some information, right? That's correct but absolutely not a problem for a CNN. Why? That's complicated and not neccesary here.
+If your image is 100 pixel wide, your kernel has a width of 3 and the strides are set to 1, the width of your output (*Output_x*) will be 98. This number is not a floating number but an integer. This means that you don't need a padding in form of columns. You can do the same for the vertical length. If one of the output dimensions is a floating number you need some padding. Technically you could also cut your image so that it fits, but this sounds like cheating. You may also notice that the output is smaller than the input. This means that we will use some information, right? That's correct but absolutely not a problem for a CNN. Why? That's complicated and not neccesary here.
+
+### Setting Image and Kernel
 
 Ok, let's implement this in Python. The output of the code cells is written in the comments indicated by `#`.
 The only libraries that you need here are
@@ -61,7 +63,9 @@ import numpy as np
 from matplotlib.image import imread
 import matplotlib.pyplot as plt
 ```
+
 With `matplotlib` we will read images locally or from the internet and then show them.
+
 ```python
 animal = imread('https://upload.wikimedia.org/wikipedia/commons/5/50/Vd-Orig.png')
 plt.imshow(animal)
@@ -71,19 +75,24 @@ plt.imshow(animal)
 
 `imread(...)` outputs an NumPy array that contains all pixels of the image.   
 How big is this image?
+
 ```python
 animal.shape
 # (100, 100, 3)
 ```
+
 The output tells us that the image is 100 pixel wide, 100 pixel long. The 3 shows us the **3rd** dimension - the color dimension. The image is not a black/white image. Each pixel contains information about the three color channels **red**, **green**, **blue**. For a black/white images the output of the shape would be simply `(100, 100)`.  
 We can also look at each pixel seperately. This is the pixel in the top left corner.
+
 ```python
 animal[0, 0, :3]
 # array([0.5176471, 0.5137255, 0.5372549], dtype=float32)
 ```
-The colors in the channel can be expressed either on the scale from 0 to 255, where you can only use integers, or 0 to 1, where you can obviously also use floating numbers.
+
+The colors in the channel can be expressed either on the scale from 0 to 255, where you can only use integers, or 0 to 1, where you can obviously also use floating numbers. Matplotlib will also take care if the numbers are out of the scale and the normalize them.
 
 Our kernels are also NumPy arrays.
+
 ```python
 kernel_blur = np.ones((3,3))*(1/9)
 kernel_blur
@@ -91,7 +100,46 @@ kernel_blur
 #       [0.11111111, 0.11111111, 0.11111111],
 #       [0.11111111, 0.11111111, 0.11111111]])
 ```
-This might help you to understand how a kernel can blur a image. Every single pixel in the final output will be a combination of 9 diffent pixel surrounding the
+
+This might help you to understand how a kernel can blur a image. Every single pixel in the final output is a combination of the 9 pixels from the input image that are covered by the kernel matrix. Look back at the first image in the blog post. Using 'kernel_blur' the green number in the output matrix will be equal to 6 * 1/9 = 0.66. In the red square you can clearly identify where the ones and zeros are, after the blurring kernel all you see is a 0.66. The input is blurred.
+
+Now we should be able to write the code for the formula that shows us first the size of the output matrix and by this also if the kernel fits the input image without padding. The functions needs to know the image, the kernel and the stride that we choose. Then you can simply hardcode the formula as given. In the last line we also check if both, the width *x* and length *y* are integers. For further functions we will also need the output sizes.
+
+```python
+def kernel_fits(image, kernel, stride):
+    output_x = (image.shape[0] - kernel.shape[0])/stride +1
+    output_y = (image.shape[1] - kernel.shape[1])/stride +1
+    return (output_x, output_y, (output_x.is_integer() and output_y.is_integer()))
+```
+
+### Move the Kernel over the Image
+The heart of the code is the convolutional function that moves the kernel over the image, applies the calculations and outputs a new output matrix.
+In our main functions that takes the same arguments as the `kernel_fits` function first use `kernel_fits` to check if the kernel fits and then use it to create an empty output array.
+
+```python
+def conv(image, kernel, stride):
+    # check if kernel fits image without padding
+    if kernel_fits(image, kernel, stride)[2]:
+        # create output array, here 3d
+        output = np.zeros((int(kernel_fits(image, kernel, 1)[0]), int(kernel_fits(image, kernel, 1)[1]), 3))
+    else:
+        print("Kernel does not fit image without padding")
+```
+
+`np.zeros` returns a multidimensional array ful of zeros, the argument is a tuble with the sizes of the dimensions `(width, length, depth)`. Width and length are obviously the outputs of the formula that we use and depth is the number of the color channels - 3. As the function takes only integers as input we prepare them with `int()`.
+
+The hard part lies ahead of us. Let`s simplify the idea and compute only the first value of the output matrix.
+
+```python
+output[0, 0, 0] = np.sum(image[0:3, 0:3, 0] * kernel)
+```
+
+`image[0:3, 0:3, 0] * kernel` multiplies the input with kernel, `np.sum` creates a sum of all the values. Now let's move the kernel to the right.
+
+```python
+output[1, 0, 0] = np.sum(image[1:4, 1:4, 0] * kernel)
+```
+In the output matrix we go one step to the right
 
 ## Trash
 
