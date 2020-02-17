@@ -112,8 +112,7 @@ $$
 
 ## Sources
 
-MINES - ParisTech  
-http://perso.mines-paristech.fr/fabien.moutarde/ES_MachineLearning/TP_convNets/convnet-notebook.html
+<a href="http://perso.mines-paristech.fr/fabien.moutarde/ES_MachineLearning/TP_convNets/convnet-notebook.html" target="_new">MINES - ParisTech</a>
 
-Wikipedia - Kernel-(image processing)  
-https://en.wikipedia.org/wiki/Kernel_(image_processing)
+<a href="https://en.wikipedia.org/wiki/Kernel_(image_processing)" target="_new">Wikipedia - Kernel-(image processing)  
+</a>

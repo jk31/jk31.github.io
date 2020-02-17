@@ -5,9 +5,10 @@
 @import "{{ site.theme }}";
 
 .img-center {
+    padding: 10px 0px;
     text-align: center;
     font-style: italic;
-    font-size: 11px;
+    font-size: 12px;
 }
 
 .post img {
