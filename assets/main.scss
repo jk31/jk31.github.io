@@ -5,10 +5,18 @@
 @import "{{ site.theme }}";
 
 .img-center {
-    padding: 10px 0px;
-    text-align: center;
-    font-style: italic;
-    font-size: 12px;
+        padding: 10px 0px;
+        text-align: center;
+        font-style: italic;
+        font-size: 12px;
+}
+
+.post-content {
+        text-align: justify;
+}
+
+.post-title {
+        text-align: left;
 }
 
 .post img {
