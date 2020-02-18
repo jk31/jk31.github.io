@@ -1,4 +1,4 @@
-# Kernel image processing in NumPy (not finished)
+# Kernel image processing in NumPy
 
 In this post I will explain how I use NumPy to implement the **kernal image processing** that is used in Deep Learning and other image processing areas. After reading you will (hopefully) understand (better) how the convolutional in Neural Networks work, how **image bluring** like in Photoshop might work and how to implement that all in NumPy. To follow the post you need some basic knowledge of Python and NumPy.
 
@@ -38,7 +38,7 @@ $$
 \end{bmatrix}
 $$  
 
-Then you sum up all values, here 1+1+1+1 and put it in a seperate **result matrix**. And how do I get all the other values. Well, you just move the kernel over the image. Well how do I move the kernel over the image. The are different ways and some limitation. To simplify the idea, just put the kernel in the top left corner for the start and then move it to the right. How much you move to the right is determined by the number of **strides**, let's set this number to one. Once you reach the end of the image you move your kernel down vertically and then start again on the left edge. You do this until you reach the bottom right corner.  
+Then you sum up all values, here 1+1+1+1 and put it in a seperate **result matrix**. And how do I get all the other values. Well, you just move the kernel over the image. How do I move the kernel over the image. The are different ways and some limitation. To simplify the idea, just put the kernel in the top left corner for the start and then move it to the right. How much you move to the right is determined by the number of **strides**, let's set this number to one. Once you reach the end of the image you move your kernel down vertically and then start again on the left edge. You do this until you reach the bottom right corner.  
 
 If you look at the image and imagine how the kernel is moving over the image you can visualize that the kernel perfectly covers all pixel. But what if the number of strides is not one but two. The kernel will move to a position where it's numbers don't overlap with the image number. In this case you need a **padding**. A padding is like a another row or column in your input matrix. There are different ways to implement a padding. In this post I will not cover it as it is not neccesary to understand the idea behind the kernel processing.
 
@@ -72,7 +72,7 @@ animal = imread('animal_99')
 plt.imshow(animal)
 ```
 
-<img src="/images/output1.png" alt="output">
+<img src="/images/output1.png" alt="output1">
 
 `imread(...)` outputs an NumPy array that contains all pixels of the image.   
 How big is this image?
@@ -207,7 +207,7 @@ while end_y <= image.shape[1]
 ```
 We reset all horinzontal positions but go vertically down.
 
-After this loop is done, the kernel has moved from the top left corner to the bottom right corner of the image. Are we done? Not yet what about the depth of the image? The image has three color-channels.
+After this loop is done, the kernel has moved from the top left corner to the bottom right corner of the image. Are we done? Not yet what about the depth of the image? The image has three color channels.
 
 In my first draft I created another loop for the third dimension. The better solution is probably to compute all three color channels at the same time.
 
@@ -296,25 +296,7 @@ As promised we can also increase `stride`.
 ```python
 plt.imshow(conv(animal, kernel_blur, 8))
 ```
-<img src="/images/output2.png" alt="output2">
-
-
-## Trash
-
-
-```python
-
-```
-```
-
-```
-$$
-\begin{bmatrix}
-4 & 0 & 0\\
-0 & 0 & 0\\
-0 & 0 & -4
-\end{bmatrix}
-$$
+<img src="/images/output3.png" alt="output2">
 
 ## Sources
 
